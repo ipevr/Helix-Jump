@@ -7,10 +7,14 @@ public class BallController : MonoBehaviour {
     [SerializeField]
     float ballVelocity = 7f;
 
+    [SerializeField]
+    AudioSource audioSource;
+
 
     void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.GetComponent<PlatformOfBouncing>()) {
             GetComponent<Rigidbody>().velocity = new Vector3(0f, ballVelocity, 0f);
+            audioSource.Play();
         }
     }
 }
