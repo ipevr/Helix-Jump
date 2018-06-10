@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class BallController : MonoBehaviour {
 
-    bool velocitySaved = false;
-    Vector3 savedVelocity;
+    [SerializeField]
+    float ballVelocity = 7f;
+
 
     void OnCollisionEnter(Collision collision) {
-        if (!velocitySaved) {
-            savedVelocity = GetComponent<Rigidbody>().velocity;
-            velocitySaved = true;
+        if (collision.gameObject.GetComponent<PlatformOfBouncing>()) {
+            GetComponent<Rigidbody>().velocity = new Vector3(0f, ballVelocity, 0f);
         }
-        GetComponent<Rigidbody>().velocity = savedVelocity;
     }
 }
