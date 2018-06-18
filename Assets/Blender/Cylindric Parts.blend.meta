@@ -6,19 +6,59 @@ ModelImporter:
     100000: //RootNode
     100002: CylindricPart_0_75
     100004: TiltPart
+    100006: Bottom
+    100008: CylindricPart_0_25
+    100010: CylindricPart_0_25_Coll
+    100012: CylindricPart_0_5
+    100014: CylindricPart_0_5_Coll
+    100016: CylindricPart_0_75_Coll
+    100018: Bottom_Coll
+    100020: TiltPart_Coll
     400000: //RootNode
     400002: CylindricPart_0_75
     400004: TiltPart
+    400006: Bottom
+    400008: CylindricPart_0_25
+    400010: CylindricPart_0_25_Coll
+    400012: CylindricPart_0_5
+    400014: CylindricPart_0_5_Coll
+    400016: CylindricPart_0_75_Coll
+    400018: Bottom_Coll
+    400020: TiltPart_Coll
     2100000: unnamed
     2300000: //RootNode
     2300002: CylindricPart_0_75
     2300004: TiltPart
+    2300006: Bottom
+    2300008: CylindricPart_0_25
+    2300010: CylindricPart_0_25_Coll
+    2300012: CylindricPart_0_5
+    2300014: CylindricPart_0_5_Coll
+    2300016: CylindricPart_0_75_Coll
+    2300018: Bottom_Coll
+    2300020: TiltPart_Coll
     3300000: //RootNode
     3300002: CylindricPart_0_75
     3300004: TiltPart
+    3300006: Bottom
+    3300008: CylindricPart_0_25
+    3300010: CylindricPart_0_25_Coll
+    3300012: CylindricPart_0_5
+    3300014: CylindricPart_0_5_Coll
+    3300016: CylindricPart_0_75_Coll
+    3300018: Bottom_Coll
+    3300020: TiltPart_Coll
     4300000: Circle
     4300002: CylindricPart_0_75
     4300004: TiltPart
+    4300006: Bottom
+    4300008: CylindricPart_0_25_Coll
+    4300010: CylindricPart_0_25
+    4300012: CylindricPart_0_5_Coll
+    4300014: CylindricPart_0_75_Coll
+    4300016: CylindricPart_0_5
+    4300018: Bottom_Coll
+    4300020: TiltPart_Coll
     7400000: Default Take
     9500000: //RootNode
     2186277476908879412: ImportLogs

@@ -1,14 +1,61 @@
 fileFormatVersion: 2
-guid: afb99d383d3576946af4983665d57b85
+guid: 0318949e4036dc64e952bdb8b0a8a362
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Bottom
+    100004: CylindricPart_0_25
+    100006: CylindricPart_0_25_Coll
+    100008: CylindricPart_0_5
+    100010: CylindricPart_0_5_Coll
+    100012: CylindricPart_0_75
+    100014: CylindricPart_0_75_Coll
+    100016: TiltPart
+    100018: Bottom_Coll
+    100020: TiltPart_Coll
     400000: //RootNode
+    400002: Bottom
+    400004: CylindricPart_0_25
+    400006: CylindricPart_0_25_Coll
+    400008: CylindricPart_0_5
+    400010: CylindricPart_0_5_Coll
+    400012: CylindricPart_0_75
+    400014: CylindricPart_0_75_Coll
+    400016: TiltPart
+    400018: Bottom_Coll
+    400020: TiltPart_Coll
     2100000: No Name
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: TiltPart
+    2300000: Bottom
+    2300002: CylindricPart_0_25
+    2300004: CylindricPart_0_25_Coll
+    2300006: CylindricPart_0_5
+    2300008: CylindricPart_0_5_Coll
+    2300010: CylindricPart_0_75
+    2300012: CylindricPart_0_75_Coll
+    2300014: TiltPart
+    2300016: Bottom_Coll
+    2300018: TiltPart_Coll
+    3300000: Bottom
+    3300002: CylindricPart_0_25
+    3300004: CylindricPart_0_25_Coll
+    3300006: CylindricPart_0_5
+    3300008: CylindricPart_0_5_Coll
+    3300010: CylindricPart_0_75
+    3300012: CylindricPart_0_75_Coll
+    3300014: TiltPart
+    3300016: Bottom_Coll
+    3300018: TiltPart_Coll
+    4300000: CylindricPart_0_25_Coll
+    4300002: CylindricPart_0_25
+    4300004: CylindricPart_0_5_Coll
+    4300006: CylindricPart_0_75_Coll
+    4300008: CylindricPart_0_5
+    4300010: CylindricPart_0_75
+    4300012: Bottom
+    4300014: TiltPart
+    4300016: Bottom_Coll
+    4300018: TiltPart_Coll
   externalObjects: {}
   materials:
     importMaterials: 1
