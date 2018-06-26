@@ -10,11 +10,18 @@ public class BallController : MonoBehaviour {
     [SerializeField]
     AudioSource audioSource;
 
+    Rigidbody myRigidbody;
 
-    void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.GetComponent<PlatformOfBouncing>()) {
-            GetComponent<Rigidbody>().velocity = new Vector3(0f, ballVelocity, 0f);
+    private void Start() {
+        myRigidbody = GetComponent<Rigidbody>();
+    }
+
+    void OnCollisionEnter(Collision other) {
+        Debug.Log("Collision with " + other.gameObject);
+        if (other.gameObject.GetComponent<PlatformOfBouncing>()) {
+            myRigidbody.velocity = new Vector3(0f, ballVelocity, 0f);
             audioSource.Play();
         }
     }
+
 }
