@@ -13,12 +13,10 @@ public class HelixController : MonoBehaviour {
     PlatformExitObserver[] platformExitObservers;
     Vector3 actualPosition;
     Vector3 newPosition;
-    Rigidbody myRigidbody;
  
 	// Use this for initialization
 	void Start () {
         platformExitObservers = GetComponentsInChildren<PlatformExitObserver>();
-        myRigidbody = GetComponent<Rigidbody>();
         for (int i = 0; i < platformExitObservers.Length; i++) {
             platformExitObservers[i].onBallEnteredPlatformExitObserver += OnBallEnteredPlatformExitObserver;
         }
@@ -38,20 +36,18 @@ public class HelixController : MonoBehaviour {
     }
 
     void MovePlatform() {
-        StartCoroutine(MoveOverSeconds(myRigidbody, newPosition, movingTime));
-        myRigidbody.MovePosition(transform.position + new Vector3(0f, 4f, 0f));
+        StartCoroutine(MoveOverSeconds(gameObject, newPosition, movingTime));
 
     }
 
-    public IEnumerator MoveOverSeconds(Rigidbody myRigidbody, Vector3 endPosition, float movingTime) {
+    public IEnumerator MoveOverSeconds(GameObject objectToMove, Vector3 endPosition, float movingTime) {
         float elaspedTime = 0f;
-        //Vector3 startingPosition = objectToMove.transform.position;
+        Vector3 startingPosition = objectToMove.transform.position;
         while (elaspedTime < movingTime) {
-            //myRigidbody.MovePosition(transform.position + new Vector3(0f, 4*(elaspedTime / movingTime), 0f));
-            myRigidbody.MovePosition(Vector3.Lerp(transform.position, transform.position + new Vector3(0f, 4f, 0f), (elaspedTime / movingTime)));
+            objectToMove.transform.position = Vector3.Lerp(startingPosition, endPosition, (elaspedTime / movingTime));
             elaspedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        transform.position = endPosition;
+        objectToMove.transform.position = endPosition;
     }
 }

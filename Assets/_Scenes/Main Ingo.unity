@@ -2027,8 +2027,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0973af0ad439b46829928f7187ed4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movingTime: 10
-  movingDelayTime: 0
+  movingTime: 2
+  movingDelayTime: 0.1
 --- !u!54 &1022390052
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2087,7 +2087,7 @@ SphereCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1059879935}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 386e6ee10cc1cca449b42c8578d12202, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
