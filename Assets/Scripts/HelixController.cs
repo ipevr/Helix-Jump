@@ -8,19 +8,18 @@ public class HelixController : MonoBehaviour {
     float movingTime = 2f;
     [SerializeField]
     float movingDelayTime = 0.1f;
-
-
+    
     PlatformExitObserver[] platformExitObservers;
-    Vector3 actualPosition;
-    Vector3 newPosition;
+    CameraController cameraController;
+    float moveValue = -4f;
  
 	// Use this for initialization
 	void Start () {
         platformExitObservers = GetComponentsInChildren<PlatformExitObserver>();
+        cameraController = FindObjectOfType<CameraController>();
         for (int i = 0; i < platformExitObservers.Length; i++) {
             platformExitObservers[i].onBallEnteredPlatformExitObserver += OnBallEnteredPlatformExitObserver;
         }
-        actualPosition = transform.position;
 	}
 	
 	// Update is called once per frame
@@ -30,24 +29,11 @@ public class HelixController : MonoBehaviour {
     }
 
     void OnBallEnteredPlatformExitObserver() {
-        newPosition = actualPosition + new Vector3(0f, 4f, 0f);
-        actualPosition = newPosition;
-        Invoke("MovePlatform", movingDelayTime);
+        Invoke("MoveCamera", movingDelayTime);
     }
 
-    void MovePlatform() {
-        StartCoroutine(MoveOverSeconds(gameObject, newPosition, movingTime));
-
+    void MoveCamera() {
+        cameraController.MoveCamera(moveValue, movingTime);
     }
 
-    public IEnumerator MoveOverSeconds(GameObject objectToMove, Vector3 endPosition, float movingTime) {
-        float elaspedTime = 0f;
-        Vector3 startingPosition = objectToMove.transform.position;
-        while (elaspedTime < movingTime) {
-            objectToMove.transform.position = Vector3.Lerp(startingPosition, endPosition, (elaspedTime / movingTime));
-            elaspedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-        objectToMove.transform.position = endPosition;
-    }
 }

@@ -12,7 +12,6 @@ public class PlatformExitObserver : MonoBehaviour {
             onBallEnteredPlatformExitObserver();
             // Disable collider of passed platform to prevent ball exit the collider a second time
             gameObject.GetComponent<Collider>().enabled = false;
-            Debug.Log(gameObject.transform.parent.gameObject + " disabled");
         }
     }
 }

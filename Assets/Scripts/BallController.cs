@@ -18,7 +18,7 @@ public class BallController : MonoBehaviour {
 
     void OnCollisionEnter(Collision other) {
         Debug.Log("Collision with " + other.gameObject);
-        if (other.gameObject.GetComponent<PlatformOfBouncing>()) {
+        if (other.gameObject.GetComponent<PlatformOfBouncing>() && gameObject.transform.position.y > other.transform.position.y) {
             myRigidbody.velocity = new Vector3(0f, ballVelocity, 0f);
             audioSource.Play();
         }
