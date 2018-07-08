@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HelixController : MonoBehaviour {
+public class Helix : MonoBehaviour {
 
     [SerializeField]
     float movingTime = 2f;
@@ -13,6 +13,7 @@ public class HelixController : MonoBehaviour {
     CameraController cameraController;
     GameManager gameManager;
     float moveValue = -4f;
+    bool rotationStopped = false;
  
 	// Use this for initialization
 	void Start () {
@@ -27,8 +28,10 @@ public class HelixController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         // rotate Helix with mouse movement
-        float angle = Input.mousePosition.x;
-        transform.rotation = Quaternion.AngleAxis(-angle, Vector3.up);
+        if (!rotationStopped) {
+            float angle = Input.mousePosition.x;
+            transform.rotation = Quaternion.AngleAxis(-angle, Vector3.up);
+        }
     }
 
     void OnBallEnteredPlatformExitObserver() {
@@ -39,6 +42,10 @@ public class HelixController : MonoBehaviour {
 
     void MoveCamera() {
         cameraController.MoveCamera(moveValue, movingTime);
+    }
+
+    public void StopRotationControl() {
+        rotationStopped = true;
     }
 
 }
