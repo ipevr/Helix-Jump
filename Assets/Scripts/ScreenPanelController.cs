@@ -56,16 +56,10 @@ public class ScreenPanelController : MonoBehaviour {
         gameWonPanel.SetActive(true);
     }
 
-    public void ShowNextLevelPanel(int level, float showTime) {
-        StartCoroutine(WaitForTime(level, showTime));
-        //nextLevelPanel.SetActive(false);
-    }
-
-    IEnumerator WaitForTime(int level, float time) {
+    public void ShowNextLevelPanel(int level) {
         nextLevelPanel.SetActive(true);
         string nextLevelText = "Level " + level.ToString();
         nextLevelPanel.GetComponentInChildren<Text>().text = nextLevelText;
-        yield return new WaitForSeconds(time);
-        nextLevelPanel.SetActive(false);
     }
+
 }

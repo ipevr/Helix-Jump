@@ -69,7 +69,13 @@ public class GameManager : MonoBehaviour {
     }
 
     void SwitchToLevel(int level) {
-        screenPanelController.ShowNextLevelPanel(level, switchToNextLevelWaitTime);
+        screenPanelController.ShowNextLevelPanel(level);
+        StartCoroutine(LoadLevelAfterTime(level, switchToNextLevelWaitTime));
+    }
+
+    IEnumerator LoadLevelAfterTime(int level, float time) {
+        StopGame();
+        yield return new WaitForSeconds(time);
         SceneManager.LoadScene(level - 1);
     }
 
