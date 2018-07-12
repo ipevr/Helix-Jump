@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
+    [SerializeField]
+    float switchToNextLevelWaitTime;
+
     ScreenPanelController screenPanelController;
     Ball ball;
     Helix helix;
@@ -23,14 +26,13 @@ public class GameManager : MonoBehaviour {
     }
 
     public void OnTiltPartHit() {
-        Debug.Log("Tilt Part was touched");
         AskPlayerAnotherTry();
     }
 
     public void OnBottomPlatformHit() {
         int sceneIndex = SceneManager.GetActiveScene().buildIndex;
         if (sceneIndex < numberOfLevels - 1) {
-            SceneManager.LoadScene(sceneIndex + 1);
+            SwitchToLevel(sceneIndex + 2);
         } else {
             GameWon();
         }
@@ -64,6 +66,11 @@ public class GameManager : MonoBehaviour {
     void StopGame() {
         ball.StopBall();
         helix.StopRotationControl();
+    }
+
+    void SwitchToLevel(int level) {
+        screenPanelController.ShowNextLevelPanel(level, switchToNextLevelWaitTime);
+        SceneManager.LoadScene(level - 1);
     }
 
 }

@@ -4,15 +4,9 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
-    Vector3 actualPosition;
     Vector3 toPosition;
     float moveTime;
     bool moveObjectRequired = false;
-
-    // Use this for initialization
-    void Start () {
-
-    }
 
     private void LateUpdate() {
         if (moveObjectRequired) {
@@ -22,8 +16,8 @@ public class CameraController : MonoBehaviour {
     }
 
     public void MoveCamera(float moveValue, float time) {
-        actualPosition = gameObject.transform.position;
-        toPosition = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + moveValue, gameObject.transform.position.z);
+        Vector3 actualPosition = gameObject.transform.position;
+        toPosition = new Vector3(actualPosition.x, actualPosition.y + moveValue, actualPosition.z);
         moveTime = time;
         moveObjectRequired = true;
     }
