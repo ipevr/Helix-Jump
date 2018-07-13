@@ -5,12 +5,17 @@ using UnityEngine;
 public class CameraController : MonoBehaviour {
 
     Vector3 toPosition;
+    Ball ball;
     float moveTime;
     bool moveObjectRequired = false;
 
-    private void LateUpdate() {
+    void Start() {
+        ball = FindObjectOfType<Ball>();
+    }
+
+    void LateUpdate() {
         if (moveObjectRequired) {
-            StartCoroutine(MoveOverSeconds(gameObject, toPosition, moveTime));
+            StartCoroutine(MoveWithBall(gameObject, toPosition));
             moveObjectRequired = false;
         }
     }
@@ -22,12 +27,16 @@ public class CameraController : MonoBehaviour {
         moveObjectRequired = true;
     }
 
-    public IEnumerator MoveOverSeconds(GameObject objectToMove, Vector3 endPosition, float movingTime) {
-        float elaspedTime = 0f;
+    IEnumerator MoveWithBall(GameObject objectToMove, Vector3 endPosition) {
+        //float elaspedTime = 0f;
         Vector3 startingPosition = objectToMove.transform.position;
-        while (elaspedTime < movingTime) {
-            objectToMove.transform.position = Vector3.Lerp(startingPosition, endPosition, (elaspedTime / movingTime));
-            elaspedTime += Time.deltaTime;
+        while (objectToMove.transform.position.y > endPosition.y) {
+            Debug.Log("objectToMove.transform.position.y" + objectToMove.transform.position.y);
+            Debug.Log("endPosition.y" + endPosition.y);
+            float delta = objectToMove.transform.position.y - ball.transform.position.y;
+            Debug.Log("delta" + delta);
+            objectToMove.transform.position = new Vector3(objectToMove.transform.position.x, ball.transform.position.y - delta, objectToMove.transform.position.z);
+            //elaspedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
         objectToMove.transform.position = endPosition;

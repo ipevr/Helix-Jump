@@ -8,15 +8,20 @@ public class Helix : MonoBehaviour {
     float movingTime = 2f;
     [SerializeField]
     float movingDelayTime = 0.1f;
+    [SerializeField]
+    int numberOfPlatforms = 8;
     
     PlatformExitObserver[] platformExitObservers;
     CameraController cameraController;
     GameManager gameManager;
+    HelixBuild helixBuild;
     float moveValue = -4f;
     bool rotationStopped = false;
  
 	// Use this for initialization
 	void Start () {
+        helixBuild = GetComponent<HelixBuild>();
+        helixBuild.CreatePlatforms(numberOfPlatforms);
         platformExitObservers = GetComponentsInChildren<PlatformExitObserver>();
         cameraController = FindObjectOfType<CameraController>();
         gameManager = FindObjectOfType<GameManager>();
