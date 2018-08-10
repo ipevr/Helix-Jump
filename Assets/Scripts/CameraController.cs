@@ -4,42 +4,69 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
+    [SerializeField]
+    float movingTime = 0.2f;
+
+    Vector3 startingPosition;
+    Vector3 actualPosition;
     Vector3 toPosition;
-    Ball ball;
     float moveTime;
     bool moveObjectRequired = false;
+    Ball ball;
+    float deltaY;
+    float platformPositionY;
+    PlatformOfBouncing[] platformOfBouncings;
+    GameObject targetPlatform;
+    GameManager gameManager;
 
-    void Start() {
+    private void Start() {
+        startingPosition = transform.position;
         ball = FindObjectOfType<Ball>();
-    }
-
-    void LateUpdate() {
-        if (moveObjectRequired) {
-            StartCoroutine(MoveWithBall(gameObject, toPosition));
-            moveObjectRequired = false;
+        gameManager = FindObjectOfType<GameManager>();
+        platformOfBouncings = FindObjectsOfType<PlatformOfBouncing>();
+        for (int i = 0; i < platformOfBouncings.Length; i++) {
+            platformOfBouncings[i].onBallHitPlatformOfBouncing += StopCamera;
         }
     }
 
-    public void MoveCamera(float moveValue, float time) {
-        Vector3 actualPosition = gameObject.transform.position;
-        toPosition = new Vector3(actualPosition.x, actualPosition.y + moveValue, actualPosition.z);
-        moveTime = time;
+    private void LateUpdate() {
+        if (moveObjectRequired) {
+            // Camera must move together with ball until the ball hits a platform
+            // no cotourine! movement directly inside LateUpdate
+            float ballPositionY = ball.gameObject.transform.position.y;
+            toPosition = new Vector3(actualPosition.x, ballPositionY + deltaY, actualPosition.z);
+            transform.position = toPosition;
+            //StartCoroutine(MoveOverSeconds(gameObject, toPosition, moveTime));
+        }
+    }
+
+    public void MoveCamera() {
+        actualPosition = gameObject.transform.position;
+        float ballPositionY = ball.gameObject.transform.position.y;
+        deltaY = actualPosition.y - ballPositionY;
         moveObjectRequired = true;
     }
 
-    IEnumerator MoveWithBall(GameObject objectToMove, Vector3 endPosition) {
-        //float elaspedTime = 0f;
+    void StopCamera() {
+        if (moveObjectRequired) {
+            // Move to the correct camera view of the actual platform
+            Vector3 endPosition = gameManager.actualPlatform.transform.position + startingPosition;
+            Debug.Log("EndPosition " + endPosition);
+            StartCoroutine(MoveOverSeconds(gameObject, endPosition, movingTime));
+        }
+        moveObjectRequired = false;
+    }
+
+    public IEnumerator MoveOverSeconds(GameObject objectToMove, Vector3 endPosition, float movingTime) {
+        float elaspedTime = 0f;
         Vector3 startingPosition = objectToMove.transform.position;
-        while (objectToMove.transform.position.y > endPosition.y) {
-            Debug.Log("objectToMove.transform.position.y" + objectToMove.transform.position.y);
-            Debug.Log("endPosition.y" + endPosition.y);
-            float delta = objectToMove.transform.position.y - ball.transform.position.y;
-            Debug.Log("delta" + delta);
-            objectToMove.transform.position = new Vector3(objectToMove.transform.position.x, ball.transform.position.y - delta, objectToMove.transform.position.z);
-            //elaspedTime += Time.deltaTime;
+        while (elaspedTime < movingTime) {
+            objectToMove.transform.position = Vector3.Lerp(startingPosition, endPosition, (elaspedTime / movingTime));
+            elaspedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
         objectToMove.transform.position = endPosition;
+        Debug.Log("camera moved");
     }
 
 }

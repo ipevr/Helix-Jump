@@ -1,0 +1,23 @@
+diff a/Assets/Scripts/CameraController.cs b/Assets/Scripts/CameraController.cs	(rejected hunks)
+@@ -27,12 +27,16 @@
+         moveObjectRequired = true;
+     }
+ 
+-    public IEnumerator MoveOverSeconds(GameObject objectToMove, Vector3 endPosition, float movingTime) {
+-        float elaspedTime = 0f;
++    IEnumerator MoveWithBall(GameObject objectToMove, Vector3 endPosition) {
++        //float elaspedTime = 0f;
+         Vector3 startingPosition = objectToMove.transform.position;
+-        while (elaspedTime < movingTime) {
+-            objectToMove.transform.position = Vector3.Lerp(startingPosition, endPosition, (elaspedTime / movingTime));
+-            elaspedTime += Time.deltaTime;
++        while (objectToMove.transform.position.y > endPosition.y) {
++            Debug.Log("objectToMove.transform.position.y" + objectToMove.transform.position.y);
++            Debug.Log("endPosition.y" + endPosition.y);
++            float delta = objectToMove.transform.position.y - ball.transform.position.y;
++            Debug.Log("delta" + delta);
++            objectToMove.transform.position = new Vector3(objectToMove.transform.position.x, ball.transform.position.y - delta, objectToMove.transform.position.z);
++            //elaspedTime += Time.deltaTime;
+             yield return new WaitForEndOfFrame();
+         }
+         objectToMove.transform.position = endPosition;

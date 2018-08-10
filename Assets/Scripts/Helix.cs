@@ -5,10 +5,6 @@ using UnityEngine;
 public class Helix : MonoBehaviour {
 
     [SerializeField]
-    float movingTime = 2f;
-    [SerializeField]
-    float movingDelayTime = 0.1f;
-    [SerializeField]
     int numberOfPlatforms = 8;
     
     PlatformExitObserver[] platformExitObservers;
@@ -16,19 +12,27 @@ public class Helix : MonoBehaviour {
     GameManager gameManager;
     HelixBuild helixBuild;
     float moveValue = -4f;
+    int platformNumber = 0;
     bool rotationStopped = false;
- 
-	// Use this for initialization
-	void Start () {
+
+    private void Awake() {
+        // Helix has to be built on Awake because other classes are expecting components of the Helix on Start
         helixBuild = GetComponent<HelixBuild>();
-        helixBuild.CreatePlatforms(numberOfPlatforms);
+        if (helixBuild) {
+            helixBuild.CreatePlatforms(numberOfPlatforms);
+        }
+    }
+
+    // Use this for initialization
+    void Start () {
         platformExitObservers = GetComponentsInChildren<PlatformExitObserver>();
         cameraController = FindObjectOfType<CameraController>();
         gameManager = FindObjectOfType<GameManager>();
         for (int i = 0; i < platformExitObservers.Length; i++) {
             platformExitObservers[i].onBallEnteredPlatformExitObserver += OnBallEnteredPlatformExitObserver;
         }
-	}
+        gameManager.SetActualPlatform(platformExitObservers[0].transform.parent.gameObject);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -40,13 +44,15 @@ public class Helix : MonoBehaviour {
     }
 
     void OnBallEnteredPlatformExitObserver() {
-        Invoke("MoveCamera", movingDelayTime);
+        MoveCamera();
         float progressInPercent = 100f / platformExitObservers.Length;
+        platformNumber++;
         gameManager.OnLevelProgress(progressInPercent);
+        gameManager.SetActualPlatform(platformExitObservers[platformNumber].transform.parent.gameObject);
     }
 
     void MoveCamera() {
-        cameraController.MoveCamera(moveValue, movingTime);
+        cameraController.MoveCamera();
     }
 
     public void StopRotationControl() {

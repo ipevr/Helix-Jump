@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     float switchToNextLevelWaitTime;
 
+    public GameObject actualPlatform = null;
+
     ScreenPanelController screenPanelController;
     Ball ball;
     Helix helix;
@@ -56,6 +58,10 @@ public class GameManager : MonoBehaviour {
     public void GameWon() {
         StopGame();
         screenPanelController.ShowWonPanel();
+    }
+
+    public void SetActualPlatform(GameObject platformObject) {
+        actualPlatform = platformObject;
     }
 
     void AskPlayerAnotherTry() {
