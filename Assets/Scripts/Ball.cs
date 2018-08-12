@@ -12,10 +12,20 @@ public class Ball : MonoBehaviour {
 
     Rigidbody myRigidbody;
     GameManager gameManager;
+    HelixBuild helixBuild;
+    bool gameStopRequired = false;
 
     private void Start() {
         myRigidbody = GetComponent<Rigidbody>();
+        myRigidbody.isKinematic = true;
         gameManager = FindObjectOfType<GameManager>();
+        helixBuild = FindObjectOfType<HelixBuild>();
+    }
+
+    private void Update() {
+        if (helixBuild.HelixBuildFinished && !gameStopRequired) {
+            myRigidbody.isKinematic = false;
+        }
     }
 
     void OnCollisionEnter(Collision other) {
@@ -31,6 +41,7 @@ public class Ball : MonoBehaviour {
 
     public void StopBall() {
         myRigidbody.isKinematic = true;
+        gameStopRequired = true;
     }
 
 }

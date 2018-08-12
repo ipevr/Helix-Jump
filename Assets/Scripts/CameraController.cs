@@ -32,11 +32,9 @@ public class CameraController : MonoBehaviour {
     private void LateUpdate() {
         if (moveObjectRequired) {
             // Camera must move together with ball until the ball hits a platform
-            // no cotourine! movement directly inside LateUpdate
             float ballPositionY = ball.gameObject.transform.position.y;
             toPosition = new Vector3(actualPosition.x, ballPositionY + deltaY, actualPosition.z);
             transform.position = toPosition;
-            //StartCoroutine(MoveOverSeconds(gameObject, toPosition, moveTime));
         }
     }
 
@@ -51,7 +49,6 @@ public class CameraController : MonoBehaviour {
         if (moveObjectRequired) {
             // Move to the correct camera view of the actual platform
             Vector3 endPosition = gameManager.actualPlatform.transform.position + startingPosition;
-            Debug.Log("EndPosition " + endPosition);
             StartCoroutine(MoveOverSeconds(gameObject, endPosition, movingTime));
         }
         moveObjectRequired = false;
@@ -66,7 +63,6 @@ public class CameraController : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
         objectToMove.transform.position = endPosition;
-        Debug.Log("camera moved");
     }
 
 }
