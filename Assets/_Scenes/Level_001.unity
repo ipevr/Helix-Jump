@@ -883,7 +883,7 @@ MonoBehaviour:
   platformExitObserverPrefab: {fileID: 1686050627336464, guid: 1aab46c7aa5ab544bb29adc20df274ff,
     type: 2}
   buildTime: 1
-  randomRotationOffset: 45
+  randomRotationOffset: 30
   numberOfTiltParts: 6
 --- !u!114 &2055997075
 MonoBehaviour:

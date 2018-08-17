@@ -78,11 +78,15 @@ public class HelixBuild : MonoBehaviour {
         for (int i = 0; i < number; i++) {
             myTiltParts[i] = Instantiate(tiltPartPrefab, platform.transform);
         }
+        float firstRotation = positionOfGap + 90f + Random.Range(0f, 90f);
+        float restOfRotationAngle = 360f - firstRotation;
+        
         //float randomRotationOffset = Random.Range(95f, 175f);
-        //float randomRotationOffset = 95f;
-        float rotation = positionOfGap + randomRotationOffset;
+
+
+
         float buildtimePerTiltPart = buildTime / number;
-        StartCoroutine(RotateOverSeconds(myTiltParts, rotation, buildtimePerTiltPart));
+        StartCoroutine(RotateOverSeconds(myTiltParts, firstRotation, buildtimePerTiltPart));
     }
 
     void CreatePlatformExitObserver() {
