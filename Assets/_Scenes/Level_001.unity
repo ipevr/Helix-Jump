@@ -882,7 +882,10 @@ MonoBehaviour:
     type: 2}
   platformExitObserverPrefab: {fileID: 1686050627336464, guid: 1aab46c7aa5ab544bb29adc20df274ff,
     type: 2}
-  buildTime: 10
+  buildTime: 1
+  positionOfGap: 0
+  randomRotationOffset: 90
+  numberOfTiltParts: 3
 --- !u!114 &2055997075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -894,7 +897,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0973af0ad439b46829928f7187ed4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfPlatforms: 8
+  numberOfPlatforms: 1
 --- !u!54 &2055997076
 Rigidbody:
   m_ObjectHideFlags: 0

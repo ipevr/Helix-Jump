@@ -22,7 +22,9 @@ public class HelixBuild : MonoBehaviour {
     [SerializeField]
     float buildTime = 0.6f;
 
-    float positionOfGap;
+    public float positionOfGap = 0f;
+    public float randomRotationOffset = 90f;
+    public int numberOfTiltParts = 3;
     float yPosition = 0f;
     bool rotatingFinished = false;
     public bool HelixBuildFinished { get { return rotatingFinished; } }
@@ -39,7 +41,7 @@ public class HelixBuild : MonoBehaviour {
             CreatePlatformGameObject();
             DefinePositionOfGap();
             CreateNormalBouncingParts();
-            CreateTiltParts(3);
+            CreateTiltParts(numberOfTiltParts);
             CreatePlatformExitObserver();
         }
         CreateBottom();
@@ -57,7 +59,7 @@ public class HelixBuild : MonoBehaviour {
     }
 
     void DefinePositionOfGap() {
-        positionOfGap = Random.Range(0f, 360f);
+        //positionOfGap = Random.Range(0f, 360f);
         //positionOfGap = 0f;
     }
 
@@ -76,10 +78,11 @@ public class HelixBuild : MonoBehaviour {
         for (int i = 0; i < number; i++) {
             myTiltParts[i] = Instantiate(tiltPartPrefab, platform.transform);
         }
-        float randomRotationOffset = Random.Range(95f, 175f);
+        //float randomRotationOffset = Random.Range(95f, 175f);
         //float randomRotationOffset = 95f;
         float rotation = positionOfGap + randomRotationOffset;
-        StartCoroutine(RotateOverSeconds(myTiltParts, rotation, buildTime));
+        float buildtimePerTiltPart = buildTime / number;
+        StartCoroutine(RotateOverSeconds(myTiltParts, rotation, buildtimePerTiltPart));
     }
 
     void CreatePlatformExitObserver() {
@@ -91,32 +94,33 @@ public class HelixBuild : MonoBehaviour {
         bottom = Instantiate(bottomPrefab, platform.transform);
     }
 
-    IEnumerator RotateOverSeconds(GameObject[] rotatingParts, float rotation, float rotatingTotalTime) {
+    IEnumerator RotateOverSeconds(GameObject[] rotatingParts, float rotation, float rotatingTime) {
         float elaspedTime = 0f;
-        float rotatingTime = rotatingTotalTime / rotatingParts.Length;
-        int i = rotatingParts.Length;
+        int numberOfParts = rotatingParts.Length;
         // store the start positions of each rotatingPart
-        Quaternion[] startPosition = new Quaternion[i];
-        for (int j = 0; j < i; j++) {
-            startPosition[j] = rotatingParts[j].transform.rotation;
+        Quaternion[] startPosition = new Quaternion[numberOfParts];
+        for (int i = 0; i < numberOfParts; i++) {
+            startPosition[i] = rotatingParts[i].transform.rotation;
         }
         // rotate all parts over time
         while (elaspedTime < rotatingTime) {
-            for (int j = 0; j < i; j++) {
-                float rot = Mathf.Lerp(startPosition[j].y, startPosition[j].y + rotation, (elaspedTime / rotatingTime));
-                rotatingParts[j].transform.rotation = Quaternion.Euler(rotatingParts[j].transform.rotation.x, rot, rotatingParts[j].transform.rotation.z);
-                //rotatingParts[j].transform.rotation = Quaternion.Slerp(startPosition[j], Quaternion.AngleAxis(rotation, Vector3.up), (elaspedTime / rotatingTime));
+            for (int i = 0; i < numberOfParts; i++) {
+                float rot = Mathf.Lerp(startPosition[i].eulerAngles.y, startPosition[i].eulerAngles.y + rotation, (elaspedTime / rotatingTime));
+                rotatingParts[i].transform.rotation = Quaternion.Euler(rotatingParts[i].transform.rotation.x, rot, rotatingParts[i].transform.rotation.z);
             }
             elaspedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+        for (int i = 0; i < numberOfParts; i++) {
+            rotatingParts[i].transform.rotation = Quaternion.Euler(rotatingParts[i].transform.rotation.x, startPosition[i].eulerAngles.y + rotation, rotatingParts[i].transform.rotation.z);
+        }
         // reduce parts by 1 and call the function again for the rest of the parts until there are no parts left
-        if (i > 1) {
-            rotation = Random.Range(5f, 85f);
-            Debug.Log("rotation " + rotation);
-            GameObject[] restOfRotatingParts = new GameObject[i - 1];
-            for (int j = 0; j < i - 1; j++) {
-                restOfRotatingParts[j] = rotatingParts[j];
+        if (numberOfParts > 1) {
+            //rotation = Random.Range(5f, 85f);
+            //Debug.Log("rotation " + rotation);
+            GameObject[] restOfRotatingParts = new GameObject[numberOfParts - 1];
+            for (int i = 0; i < numberOfParts - 1; i++) {
+                restOfRotatingParts[i] = rotatingParts[i];
             }
             StartCoroutine(RotateOverSeconds(restOfRotatingParts, rotation, rotatingTime));
         } else {

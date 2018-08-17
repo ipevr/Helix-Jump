@@ -42,7 +42,7 @@ public class Helix : MonoBehaviour {
         }
         if (!rotationStopped) {
             float angle = Input.mousePosition.x;
-            transform.rotation = Quaternion.AngleAxis(-angle, Vector3.up);
+            //transform.rotation = Quaternion.AngleAxis(-angle, Vector3.up);
         }
     }
 
