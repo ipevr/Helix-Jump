@@ -22,7 +22,7 @@ public class HelixBuild : MonoBehaviour {
     [SerializeField]
     float buildTime = 0.6f;
 
-    public float positionOfGap = 0f;
+    float positionOfGap = 0f;
     public float randomRotationOffset = 90f;
     public int numberOfTiltParts = 3;
     float yPosition = 0f;
@@ -59,7 +59,7 @@ public class HelixBuild : MonoBehaviour {
     }
 
     void DefinePositionOfGap() {
-        //positionOfGap = Random.Range(0f, 360f);
+        positionOfGap = Random.Range(0f, 360f);
         //positionOfGap = 0f;
     }
 
@@ -122,7 +122,7 @@ public class HelixBuild : MonoBehaviour {
             for (int i = 0; i < numberOfParts - 1; i++) {
                 restOfRotatingParts[i] = rotatingParts[i];
             }
-            StartCoroutine(RotateOverSeconds(restOfRotatingParts, rotation, rotatingTime));
+            StartCoroutine(RotateOverSeconds(restOfRotatingParts, randomRotationOffset, rotatingTime));
         } else {
             rotatingFinished = true;
         }
