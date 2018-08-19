@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public class HelixBuild : MonoBehaviour {
 
     [SerializeField]
     GameObject tiltPartPrefab;
+    [SerializeField]
+    float angleOfTiltPart = 12f;
 
     [SerializeField]
     GameObject bottomPrefab;
@@ -27,6 +30,7 @@ public class HelixBuild : MonoBehaviour {
     public int numberOfTiltParts = 3;
     float yPosition = 0f;
     bool rotatingFinished = false;
+    bool firstPlacement = true;
     public bool HelixBuildFinished { get { return rotatingFinished; } }
     GameObject platform;
     GameObject bottom;
@@ -59,8 +63,8 @@ public class HelixBuild : MonoBehaviour {
     }
 
     void DefinePositionOfGap() {
-        positionOfGap = Random.Range(0f, 360f);
-        //positionOfGap = 0f;
+        //positionOfGap = UnityEngine.Random.Range(0f, 360f);
+        positionOfGap = 0f;
     }
 
     void CreateNormalBouncingParts() {
@@ -78,15 +82,25 @@ public class HelixBuild : MonoBehaviour {
         for (int i = 0; i < number; i++) {
             myTiltParts[i] = Instantiate(tiltPartPrefab, platform.transform);
         }
-        float firstRotation = positionOfGap + 90f + Random.Range(0f, 90f);
-        float restOfRotationAngle = 360f - firstRotation;
-        
-        //float randomRotationOffset = Random.Range(95f, 175f);
-
-
-
         float buildtimePerTiltPart = buildTime / number;
-        StartCoroutine(RotateOverSeconds(myTiltParts, firstRotation, buildtimePerTiltPart));
+
+        float[] tiltPartAngles = CalculateTiltPartAngles(90f, number, angleOfTiltPart);
+        firstPlacement = true;
+        StartCoroutine(RotateOverSeconds(myTiltParts, tiltPartAngles, buildtimePerTiltPart));
+    }
+
+    private float[] CalculateTiltPartAngles(float gapAngle, int number, float angleOfTiltPart) {
+        float[] alphas = new float[number];
+        float restAngle = 360 - (gapAngle + (number * angleOfTiltPart));
+        //Debug.Log("restangle " + restAngle);
+        for (int i = 0; i < number; i++) {
+            float randomAngle = UnityEngine.Random.Range(0f, restAngle);
+            restAngle -= randomAngle;
+            alphas[i] = randomAngle;
+            //Debug.Log("alpha " + i + " = " + alphas[i]);
+            //Debug.Log("restangle " + restAngle);
+        }
+        return alphas;
     }
 
     void CreatePlatformExitObserver() {
@@ -98,35 +112,47 @@ public class HelixBuild : MonoBehaviour {
         bottom = Instantiate(bottomPrefab, platform.transform);
     }
 
-    IEnumerator RotateOverSeconds(GameObject[] rotatingParts, float rotation, float rotatingTime) {
+    IEnumerator RotateOverSeconds(GameObject[] rotatingParts, float[] rotations, float rotatingTime) {
         float elaspedTime = 0f;
         int numberOfParts = rotatingParts.Length;
         // store the start positions of each rotatingPart
         Quaternion[] startPosition = new Quaternion[numberOfParts];
         for (int i = 0; i < numberOfParts; i++) {
+            if (firstPlacement) {
+                rotations[i] += positionOfGap + 90f;
+            }
             startPosition[i] = rotatingParts[i].transform.rotation;
         }
+        firstPlacement = false;
         // rotate all parts over time
         while (elaspedTime < rotatingTime) {
             for (int i = 0; i < numberOfParts; i++) {
-                float rot = Mathf.Lerp(startPosition[i].eulerAngles.y, startPosition[i].eulerAngles.y + rotation, (elaspedTime / rotatingTime));
-                rotatingParts[i].transform.rotation = Quaternion.Euler(rotatingParts[i].transform.rotation.x, rot, rotatingParts[i].transform.rotation.z);
+                //float rot = Mathf.Lerp(startPosition[i].eulerAngles.y, startPosition[i].eulerAngles.y + rotations[i], (elaspedTime / rotatingTime));
+                float rot = Mathf.Lerp(0f, rotations[i], (elaspedTime / rotatingTime));
+                float xAngle = rotatingParts[i].transform.rotation.x;
+                float yAngle = startPosition[i].eulerAngles.y + rot;
+                float zAngle = rotatingParts[i].transform.rotation.z;
+                rotatingParts[i].transform.rotation = Quaternion.Euler(xAngle, yAngle, zAngle);
+                rot = 0f;
             }
             elaspedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+        Debug.Log("check");
         for (int i = 0; i < numberOfParts; i++) {
-            rotatingParts[i].transform.rotation = Quaternion.Euler(rotatingParts[i].transform.rotation.x, startPosition[i].eulerAngles.y + rotation, rotatingParts[i].transform.rotation.z);
+            rotatingParts[i].transform.rotation = Quaternion.Euler(rotatingParts[i].transform.rotation.x, startPosition[i].eulerAngles.y + rotations[i], rotatingParts[i].transform.rotation.z);
         }
         // reduce parts by 1 and call the function again for the rest of the parts until there are no parts left
         if (numberOfParts > 1) {
             //rotation = Random.Range(5f, 85f);
             //Debug.Log("rotation " + rotation);
             GameObject[] restOfRotatingParts = new GameObject[numberOfParts - 1];
+            float[] restOfRotations = new float[numberOfParts - 1];
             for (int i = 0; i < numberOfParts - 1; i++) {
                 restOfRotatingParts[i] = rotatingParts[i];
+                restOfRotations[i] = rotations[i];
             }
-            StartCoroutine(RotateOverSeconds(restOfRotatingParts, randomRotationOffset, rotatingTime));
+            StartCoroutine(RotateOverSeconds(restOfRotatingParts, restOfRotations, rotatingTime));
         } else {
             rotatingFinished = true;
         }
