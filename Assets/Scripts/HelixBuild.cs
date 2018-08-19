@@ -26,11 +26,9 @@ public class HelixBuild : MonoBehaviour {
     float buildTime = 0.6f;
 
     float positionOfGap = 0f;
-    public float randomRotationOffset = 90f;
     public int numberOfTiltParts = 3;
     float yPosition = 0f;
     bool rotatingFinished = false;
-    bool firstPlacement = true;
     public bool HelixBuildFinished { get { return rotatingFinished; } }
     GameObject platform;
     GameObject bottom;
@@ -85,7 +83,6 @@ public class HelixBuild : MonoBehaviour {
         float buildtimePerTiltPart = buildTime / number;
 
         float[] tiltPartAngles = CalculateTiltPartAngles(90f, number, angleOfTiltPart);
-        firstPlacement = true;
         StartCoroutine(RotateOverSeconds(myTiltParts, tiltPartAngles, buildtimePerTiltPart));
     }
 
@@ -93,12 +90,17 @@ public class HelixBuild : MonoBehaviour {
         float[] alphas = new float[number];
         float restAngle = 360 - (gapAngle + (number * angleOfTiltPart));
         //Debug.Log("restangle " + restAngle);
+        float randomAngle = 30f;
         for (int i = 0; i < number; i++) {
-            float randomAngle = UnityEngine.Random.Range(0f, restAngle);
+            //float randomAngle = UnityEngine.Random.Range(0f, restAngle);
+            randomAngle += 5f;
             restAngle -= randomAngle;
             alphas[i] = randomAngle;
-            //Debug.Log("alpha " + i + " = " + alphas[i]);
             //Debug.Log("restangle " + restAngle);
+        }
+        //alphas[0] += positionOfGap + gapAngle;
+        for (int i = 0; i < number; i++) {
+            Debug.Log("alpha " + i + " = " + alphas[i]);
         }
         return alphas;
     }
@@ -118,27 +120,21 @@ public class HelixBuild : MonoBehaviour {
         // store the start positions of each rotatingPart
         Quaternion[] startPosition = new Quaternion[numberOfParts];
         for (int i = 0; i < numberOfParts; i++) {
-            if (firstPlacement) {
-                rotations[i] += positionOfGap + 90f;
-            }
             startPosition[i] = rotatingParts[i].transform.rotation;
         }
-        firstPlacement = false;
         // rotate all parts over time
         while (elaspedTime < rotatingTime) {
             for (int i = 0; i < numberOfParts; i++) {
-                //float rot = Mathf.Lerp(startPosition[i].eulerAngles.y, startPosition[i].eulerAngles.y + rotations[i], (elaspedTime / rotatingTime));
-                float rot = Mathf.Lerp(0f, rotations[i], (elaspedTime / rotatingTime));
+                Debug.Log(rotations.Length);
+                float rot = Mathf.Lerp(0f, rotations[0], (elaspedTime / rotatingTime));
                 float xAngle = rotatingParts[i].transform.rotation.x;
                 float yAngle = startPosition[i].eulerAngles.y + rot;
                 float zAngle = rotatingParts[i].transform.rotation.z;
                 rotatingParts[i].transform.rotation = Quaternion.Euler(xAngle, yAngle, zAngle);
-                rot = 0f;
             }
             elaspedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        Debug.Log("check");
         for (int i = 0; i < numberOfParts; i++) {
             rotatingParts[i].transform.rotation = Quaternion.Euler(rotatingParts[i].transform.rotation.x, startPosition[i].eulerAngles.y + rotations[i], rotatingParts[i].transform.rotation.z);
         }
@@ -150,7 +146,9 @@ public class HelixBuild : MonoBehaviour {
             float[] restOfRotations = new float[numberOfParts - 1];
             for (int i = 0; i < numberOfParts - 1; i++) {
                 restOfRotatingParts[i] = rotatingParts[i];
-                restOfRotations[i] = rotations[i];
+            }
+            for (int i = 1; i < numberOfParts; i++) {
+                restOfRotations[i - 1] = rotations[i];
             }
             StartCoroutine(RotateOverSeconds(restOfRotatingParts, restOfRotations, rotatingTime));
         } else {
