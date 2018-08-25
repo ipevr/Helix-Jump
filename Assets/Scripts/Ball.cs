@@ -8,10 +8,14 @@ public class Ball : MonoBehaviour {
     float ballVelocity = 7f;
 
     [SerializeField]
+    float startBallDelay = 1f;
+
+    [SerializeField]
     AudioSource audioSource;
 
     Rigidbody myRigidbody;
     GameManager gameManager;
+    Helix helix;
     HelixBuild helixBuild;
     bool gameStopRequired = false;
 
@@ -20,12 +24,17 @@ public class Ball : MonoBehaviour {
         myRigidbody.isKinematic = true;
         gameManager = FindObjectOfType<GameManager>();
         helixBuild = FindObjectOfType<HelixBuild>();
+        helix = FindObjectOfType<Helix>();
     }
 
     private void Update() {
         if (helixBuild.HelixBuildFinished && !gameStopRequired) {
-            myRigidbody.isKinematic = false;
+            Invoke("StartBall", startBallDelay);
         }
+    }
+
+    private void StartBall() {
+        myRigidbody.isKinematic = false;
     }
 
     void OnCollisionEnter(Collision other) {
@@ -33,6 +42,8 @@ public class Ball : MonoBehaviour {
             myRigidbody.velocity = new Vector3(0f, ballVelocity, 0f);
             audioSource.Play();
         } else if (other.gameObject.GetComponent<TiltPart>()) {
+            StopBall();
+            helix.StopRotationControl();
             gameManager.OnTiltPartHit();
         } else if (other.gameObject.GetComponent<BottomPlatform>()) {
             gameManager.OnBottomPlatformHit();
@@ -41,6 +52,8 @@ public class Ball : MonoBehaviour {
 
     public void StopBall() {
         myRigidbody.isKinematic = true;
+        myRigidbody.velocity = Vector3.zero;
+        Debug.Log("stop");
         gameStopRequired = true;
     }
 

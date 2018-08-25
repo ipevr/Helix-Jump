@@ -14,6 +14,7 @@ public class Helix : MonoBehaviour {
     float moveValue = -4f;
     int platformNumber = 0;
     bool rotationStopped = true;
+    bool helixBuildFinished = false;
 
     private void Awake() {
         // Helix has to be built on Awake because other classes are expecting components of the Helix on Start
@@ -37,12 +38,13 @@ public class Helix : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         // rotate Helix with mouse movement
-        if (helixBuild.HelixBuildFinished) {
+        if (helixBuild.HelixBuildFinished && !helixBuildFinished) {
             rotationStopped = false;
+            helixBuildFinished = true;
         }
         if (!rotationStopped) {
             float angle = Input.mousePosition.x;
-            //transform.rotation = Quaternion.AngleAxis(-angle, Vector3.up);
+            transform.rotation = Quaternion.AngleAxis(-angle, Vector3.up);
         }
     }
 

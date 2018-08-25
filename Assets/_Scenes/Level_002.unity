@@ -1444,10 +1444,13 @@ MonoBehaviour:
     type: 2}
   tiltPartPrefab: {fileID: 1627224200118386, guid: 842967e51c254094f86ae671be677426,
     type: 2}
+  angleOfTiltPart: 30
   bottomPrefab: {fileID: 1030659868525166, guid: 183f13e4a0257924cbe704a012f96e58,
     type: 2}
   platformExitObserverPrefab: {fileID: 1686050627336464, guid: 1aab46c7aa5ab544bb29adc20df274ff,
     type: 2}
+  buildTime: 0.6
+  numberOfTiltParts: 2
 --- !u!114 &678866854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1459,7 +1462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0973af0ad439b46829928f7187ed4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfPlatforms: 8
+  numberOfPlatforms: 2
 --- !u!54 &678866855
 Rigidbody:
   m_ObjectHideFlags: 0
