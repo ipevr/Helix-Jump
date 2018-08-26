@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour {
     Ball ball;
     Helix helix;
     int numberOfLevels = 0;
+    int actualLevelIndex = 0;
 
     // Use this for initialization
     void Start () {
@@ -21,6 +22,12 @@ public class GameManager : MonoBehaviour {
         ball = FindObjectOfType<Ball>();
         helix = FindObjectOfType<Helix>();
         numberOfLevels = SceneManager.sceneCountInBuildSettings;
+        actualLevelIndex = PlayerPrefsManager.GetActualLevel();
+        Debug.Log("levelIndex " + actualLevelIndex);
+        Debug.Log("SceneManager.sceneCount " + SceneManager.sceneCount);
+        if (SceneManager.GetActiveScene().buildIndex != actualLevelIndex) {
+            SceneManager.LoadScene(actualLevelIndex);
+        }
     }
 
     public void OnLevelProgress(float progressInPercent) {
@@ -64,6 +71,12 @@ public class GameManager : MonoBehaviour {
         actualPlatform = platformObject;
     }
 
+    public void ResetLevelstorage() {
+        PlayerPrefsManager.SetActualLevel(0);
+        actualLevelIndex = 0;
+        SceneManager.LoadScene(actualLevelIndex);
+    }
+
     void AskPlayerAnotherTry() {
         screenPanelController.ShowPlayAgainPanel();
         StopGame();
@@ -77,6 +90,7 @@ public class GameManager : MonoBehaviour {
     void SwitchToLevel(int level) {
         screenPanelController.ShowNextLevelPanel(level);
         StartCoroutine(LoadLevelAfterTime(level, switchToNextLevelWaitTime));
+        PlayerPrefsManager.SetActualLevel(level - 1);
     }
 
     IEnumerator LoadLevelAfterTime(int level, float time) {

@@ -6,12 +6,16 @@ public class Helix : MonoBehaviour {
 
     [SerializeField]
     int numberOfPlatforms = 8;
+
+    [SerializeField]
+    float rotationDamping = 0.8f;
     
     PlatformExitObserver[] platformExitObservers;
     CameraController cameraController;
     GameManager gameManager;
     HelixBuild helixBuild;
     float moveValue = -4f;
+    float angle = 0f;
     int platformNumber = 0;
     bool rotationStopped = true;
     bool helixBuildFinished = false;
@@ -43,10 +47,33 @@ public class Helix : MonoBehaviour {
             helixBuildFinished = true;
         }
         if (!rotationStopped) {
-            float angle = Input.mousePosition.x;
+            if (Input.touchCount == 1) {
+                Touch myTouch = Input.GetTouch(0);
+                angle += myTouch.deltaPosition.x * rotationDamping;
+#if UNITY_EDITOR
+            } else {
+                angle = Input.mousePosition.x;
+#endif
+            }
             transform.rotation = Quaternion.AngleAxis(-angle, Vector3.up);
         }
     }
+
+    //private void OnGUI() {
+    //    foreach (Touch touch in Input.touches) {
+    //        string message = "";
+    //        message += "ID: " + touch.fingerId + "\n";
+    //        message += "Phase: " + touch.phase.ToString() + "\n";
+    //        message += "TapCount: " + touch.tapCount + "\n";
+    //        message += "Pos X: " + touch.position.x + "\n";
+    //        message += "Pos Y: " + touch.position.y + "\n";
+
+    //        int num = touch.fingerId;
+    //        GUI.Label(new Rect(0 + 130 * num, 0, 120, 100), message);
+
+
+    //    }
+    //}
 
     void OnBallEnteredPlatformExitObserver() {
         MoveCamera();

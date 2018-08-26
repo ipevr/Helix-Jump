@@ -15,7 +15,7 @@ public class HelixBuild : MonoBehaviour {
     GameObject tiltPartPrefab;
 
     [SerializeField]
-    float angleOfTiltPart = 12f;
+    float angleOfTiltPart = 30f;
 
     [SerializeField]
     GameObject bottomPrefab;
@@ -58,14 +58,12 @@ public class HelixBuild : MonoBehaviour {
 
     void DefinePositionOfGap() {
         positionOfGap = UnityEngine.Random.Range(0f, 360f);
-        //positionOfGap = 0f;
     }
 
     void CreateNormalBouncingParts() {
         float rotation = positionOfGap + 90f;
         for (int i = 0; i < 3; i++) {
             GameObject bouncingPart = Instantiate(normalBounncingPartPrefab, platform.transform);
-            //bouncingPart.transform.Rotate(Vector3.up * rotation);
             bouncingPart.transform.rotation = Quaternion.AngleAxis(rotation, Vector3.up);
             rotation += 90f;
         }
@@ -85,20 +83,24 @@ public class HelixBuild : MonoBehaviour {
     private float[] CalculateTiltPartAngles(float gapAngle, int number, float angleOfTiltPart) {
         float[] alphas = new float[number];
         float restAngle = 360 - (gapAngle + (number * angleOfTiltPart)); // = 198 for 6 parts
+        if (restAngle <= 0) {
+            Debug.LogError("The rest angle for the tilt parts is too low. Reduce the number of tilt parts or their angle.");
+        }
+        // create 'number' numbers between 0 and 1
+        float sum = 0f;
         for (int i = 0; i < number; i++) {
-            // TODO: the distribution of the parts must be optimized: at the moment the are large angles at the beginning and always very small angles in the end
-            // the problem is increasing with the number of parts
-            float randomAngle = UnityEngine.Random.Range(0f, restAngle);
+            alphas[i] = UnityEngine.Random.Range(0f, 1f);
+            sum += alphas[i];
+        }
+        for (int i = 0; i < number; i++) {
+            // divide each n by its sum and multiply it with restAngle
+            alphas[i] = (alphas[i] / sum) * restAngle;
             if (i == 0) {
                 // first angle must be > gapAngle
-                alphas[i] = randomAngle + gapAngle + positionOfGap;
+                alphas[i] += gapAngle + positionOfGap;
             } else {
-                // rest of angles must be larger than the angleOfTiltPart to avoid overlapping parts
-                // the next angle must be calculated relative to the angle before
-                alphas[i] = randomAngle + angleOfTiltPart;
+                alphas[i] += angleOfTiltPart;
             }
-            restAngle -= randomAngle;
-            Debug.Log("alpha " + i + " = " + alphas[i]);
         }
         //alphas[0] += positionOfGap + gapAngle;
         return alphas;
@@ -125,20 +127,18 @@ public class HelixBuild : MonoBehaviour {
         while (elaspedTime < rotatingTime) {
             for (int i = 0; i < numberOfParts; i++) {
                 float rot = Mathf.Lerp(0f, rotations[0], (elaspedTime / rotatingTime));
-                float xAngle = rotatingParts[i].transform.rotation.x;
-                float yAngle = startPosition[i].eulerAngles.y + rot;
-                float zAngle = rotatingParts[i].transform.rotation.z;
-                rotatingParts[i].transform.rotation = Quaternion.Euler(xAngle, yAngle, zAngle);
+                rotatingParts[i].transform.rotation = Quaternion.Euler(rotatingParts[i].transform.rotation.x, 
+                                                                       startPosition[i].eulerAngles.y + rot,
+                                                                       rotatingParts[i].transform.rotation.z);
             }
             elaspedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
         // secure that the angle is set correct after rotatingTime
         for (int i = 0; i < numberOfParts; i++) {
-            float xAngle = rotatingParts[i].transform.rotation.x;
-            float yAngle = startPosition[i].eulerAngles.y + rotations[0];
-            float zAngle = rotatingParts[i].transform.rotation.z;
-            rotatingParts[i].transform.rotation = Quaternion.Euler(xAngle, yAngle, zAngle);
+            rotatingParts[i].transform.rotation = Quaternion.Euler(rotatingParts[i].transform.rotation.x,
+                                                                   startPosition[i].eulerAngles.y + rotations[0],
+                                                                   rotatingParts[i].transform.rotation.z);
         }
         // reduce parts by 1 and call the function again for the rest of the parts until there are no parts left
         if (numberOfParts > 1) {
