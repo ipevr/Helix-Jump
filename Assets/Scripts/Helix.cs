@@ -95,4 +95,8 @@ public class Helix : MonoBehaviour {
         rotationStopped = true;
     }
 
+    public void StartRotationControl() {
+        rotationStopped = false;
+    }
+
 }

@@ -33,7 +33,7 @@ public class Ball : MonoBehaviour {
         }
     }
 
-    private void StartBall() {
+    public void StartBall() {
         myRigidbody.isKinematic = false;
     }
 

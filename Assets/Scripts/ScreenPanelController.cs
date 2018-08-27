@@ -24,6 +24,9 @@ public class ScreenPanelController : MonoBehaviour {
     [SerializeField]
     GameObject nextLevelPanel;
 
+    [SerializeField]
+    GameObject areYouSurePanel;
+
     string textBubbleActualLevel = "";
     string textBubbleNextLevel = "";
     int numberOfLevels = 0;
@@ -32,6 +35,7 @@ public class ScreenPanelController : MonoBehaviour {
         playAgainPanel.SetActive(false);
         gameWonPanel.SetActive(false);
         nextLevelPanel.SetActive(false);
+        areYouSurePanel.SetActive(false);
         int levelIndex = SceneManager.GetActiveScene().buildIndex + 1;
         numberOfLevels = SceneManager.sceneCountInBuildSettings;
         textBubbleActualLevel = levelIndex.ToString();
@@ -60,6 +64,10 @@ public class ScreenPanelController : MonoBehaviour {
         nextLevelPanel.SetActive(true);
         string nextLevelText = "Level " + level.ToString();
         nextLevelPanel.GetComponentInChildren<Text>().text = nextLevelText;
+    }
+
+    public void ShowAreYouSurePanel() {
+        areYouSurePanel.SetActive(true);
     }
 
 }

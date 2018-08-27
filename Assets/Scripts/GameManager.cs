@@ -5,29 +5,20 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
-    [SerializeField]
-    float switchToNextLevelWaitTime;
-
     public GameObject actualPlatform = null;
 
     ScreenPanelController screenPanelController;
+    LevelManager levelManager;
     Ball ball;
     Helix helix;
-    int numberOfLevels = 0;
     int actualLevelIndex = 0;
 
     // Use this for initialization
     void Start () {
         screenPanelController = FindObjectOfType<ScreenPanelController>();
+        levelManager = FindObjectOfType<LevelManager>();
         ball = FindObjectOfType<Ball>();
         helix = FindObjectOfType<Helix>();
-        numberOfLevels = SceneManager.sceneCountInBuildSettings;
-        actualLevelIndex = PlayerPrefsManager.GetActualLevel();
-        Debug.Log("levelIndex " + actualLevelIndex);
-        Debug.Log("SceneManager.sceneCount " + SceneManager.sceneCount);
-        if (SceneManager.GetActiveScene().buildIndex != actualLevelIndex) {
-            SceneManager.LoadScene(actualLevelIndex);
-        }
     }
 
     public void OnLevelProgress(float progressInPercent) {
@@ -39,9 +30,9 @@ public class GameManager : MonoBehaviour {
     }
 
     public void OnBottomPlatformHit() {
-        int sceneIndex = SceneManager.GetActiveScene().buildIndex;
-        if (sceneIndex < numberOfLevels - 1) {
-            SwitchToLevel(sceneIndex + 2);
+        if (!levelManager.IsLastSceneIndex) {
+            StopGame();
+            levelManager.NextLevel();
         } else {
             GameWon();
         }
@@ -53,13 +44,11 @@ public class GameManager : MonoBehaviour {
     }
 
     public void PlayLevelAgain() {
-        int index = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(index);
+        levelManager.PlayLevelAgain();
     }
 
     public void PlayGameAgain() {
-        int index = 0;
-        SceneManager.LoadScene(index);
+        levelManager.StartFromBeginning();
     }
 
     public void GameWon() {
@@ -71,10 +60,14 @@ public class GameManager : MonoBehaviour {
         actualPlatform = platformObject;
     }
 
-    public void ResetLevelstorage() {
-        PlayerPrefsManager.SetActualLevel(0);
-        actualLevelIndex = 0;
-        SceneManager.LoadScene(actualLevelIndex);
+    public void ContinueGame() {
+        ball.StartBall();
+        helix.StartRotationControl();
+    }
+
+    public void StopGame() {
+        ball.StopBall();
+        helix.StopRotationControl();
     }
 
     void AskPlayerAnotherTry() {
@@ -82,21 +75,5 @@ public class GameManager : MonoBehaviour {
         StopGame();
     }
 
-    void StopGame() {
-        ball.StopBall();
-        helix.StopRotationControl();
-    }
-
-    void SwitchToLevel(int level) {
-        screenPanelController.ShowNextLevelPanel(level);
-        StartCoroutine(LoadLevelAfterTime(level, switchToNextLevelWaitTime));
-        PlayerPrefsManager.SetActualLevel(level - 1);
-    }
-
-    IEnumerator LoadLevelAfterTime(int level, float time) {
-        StopGame();
-        yield return new WaitForSeconds(time);
-        SceneManager.LoadScene(level - 1);
-    }
 
 }
