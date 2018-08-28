@@ -9,25 +9,36 @@ public class LevelManager : MonoBehaviour {
     [SerializeField]
     float switchToNextLevelWaitTime = 2f;
 
+    const int optionsScreenIndex = 0;
+    const int startLevelIndex = 1;
+
     int numberOfLevels = 0;
-    int actualLevelIndex = 0;
+    int actualLevelIndex = 1;
+    int lastGameLevelIndex = 1;
     ScreenPanelController screenPanelController;
 
-    public bool IsLastSceneIndex => (SceneManager.GetActiveScene().buildIndex == SceneManager.sceneCountInBuildSettings - 1);
+    public int NumberOfLevelsInGame => SceneManager.sceneCountInBuildSettings - 1;
+
+    public bool IsLastSceneIndex => (SceneManager.GetActiveScene().buildIndex == NumberOfLevelsInGame);
 
     public int ActulSceneIndex => SceneManager.GetActiveScene().buildIndex;
+
+    // TODO: A build will start with buildindex 0, which is the options screen --> that's not good!
 
     private void Start() {
         screenPanelController = FindObjectOfType<ScreenPanelController>();
         actualLevelIndex = PlayerPrefsManager.GetActualLevel();
-        if (ActulSceneIndex != actualLevelIndex) {
+        if (!PlayerPrefsManager.ActualLevelKeyExists) {
+            PlayerPrefsManager.SetActualLevel(lastGameLevelIndex);
+        }
+        if ((ActulSceneIndex != actualLevelIndex) && (ActulSceneIndex != optionsScreenIndex)) {
             SceneManager.LoadScene(actualLevelIndex);
         }
 
     }
 
     public void NextLevel() {
-        screenPanelController.ShowNextLevelPanel(ActulSceneIndex + 2);
+        screenPanelController.ShowNextLevelPanel(ActulSceneIndex + 1);
         StartCoroutine(LoadLevelAfterTime(ActulSceneIndex + 1, switchToNextLevelWaitTime));
         PlayerPrefsManager.SetActualLevel(ActulSceneIndex + 1);
     }
@@ -36,9 +47,18 @@ public class LevelManager : MonoBehaviour {
         StartFromBeginning();
     }
 
+    public void CallOptionsScreen() {
+        lastGameLevelIndex = ActulSceneIndex;
+        SceneManager.LoadScene(optionsScreenIndex);
+    }
+
+    public void BackToGame() {
+        SceneManager.LoadScene(lastGameLevelIndex);
+    }
+
     public void StartFromBeginning() {
-        PlayerPrefsManager.SetActualLevel(0);
-        SceneManager.LoadScene(0);
+        PlayerPrefsManager.SetActualLevel(startLevelIndex);
+        SceneManager.LoadScene(startLevelIndex);
     }
 
     public void PlayLevelAgain() {

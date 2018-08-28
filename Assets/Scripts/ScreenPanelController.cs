@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class ScreenPanelController : MonoBehaviour {
 
@@ -24,23 +23,18 @@ public class ScreenPanelController : MonoBehaviour {
     [SerializeField]
     GameObject nextLevelPanel;
 
-    [SerializeField]
-    GameObject areYouSurePanel;
-
+    LevelManager levelManager;
     string textBubbleActualLevel = "";
     string textBubbleNextLevel = "";
-    int numberOfLevels = 0;
 
     void Start() {
+        levelManager = FindObjectOfType<LevelManager>();
         playAgainPanel.SetActive(false);
         gameWonPanel.SetActive(false);
         nextLevelPanel.SetActive(false);
-        areYouSurePanel.SetActive(false);
-        int levelIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        numberOfLevels = SceneManager.sceneCountInBuildSettings;
-        textBubbleActualLevel = levelIndex.ToString();
-        if (levelIndex < numberOfLevels) {
-            textBubbleNextLevel = (levelIndex + 1).ToString();
+        textBubbleActualLevel = levelManager.ActulSceneIndex.ToString();
+        if (levelManager.ActulSceneIndex < levelManager.NumberOfLevelsInGame) {
+            textBubbleNextLevel = (levelManager.ActulSceneIndex + 1).ToString();
         } else {
             textBubbleNextLevel = "E";
         }
@@ -60,14 +54,14 @@ public class ScreenPanelController : MonoBehaviour {
         gameWonPanel.SetActive(true);
     }
 
+    public void ShowOptionsScreen() {
+        levelManager.CallOptionsScreen();
+    }
+
     public void ShowNextLevelPanel(int level) {
         nextLevelPanel.SetActive(true);
         string nextLevelText = "Level " + level.ToString();
         nextLevelPanel.GetComponentInChildren<Text>().text = nextLevelText;
-    }
-
-    public void ShowAreYouSurePanel() {
-        areYouSurePanel.SetActive(true);
     }
 
 }
