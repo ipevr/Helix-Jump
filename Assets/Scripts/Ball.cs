@@ -16,48 +16,62 @@ public class Ball : MonoBehaviour {
     Rigidbody myRigidbody;
     GameManager gameManager;
     Helix helix;
-    HelixBuild helixBuild;
     bool gameStopRequired = false;
+    bool destroyPlatformRequired = false;
 
     private void Start() {
         myRigidbody = GetComponent<Rigidbody>();
         myRigidbody.isKinematic = true;
         gameManager = FindObjectOfType<GameManager>();
-        helixBuild = FindObjectOfType<HelixBuild>();
         helix = FindObjectOfType<Helix>();
 
         gameManager.gameContinueOrder += StartBall;
         gameManager.gameStopOrder += StopBall;
+        gameManager.destroyPlatformOrder += DestroyPlatformOrderReceived;
     }
 
     private void Update() {
-        if (helixBuild.HelixBuildFinished && !gameStopRequired) {
+        if (helix.HelixBuildFinished && !gameStopRequired) {
             Invoke("StartBall", startBallDelay);
         }
     }
 
-    public void StartBall() {
+    private void StartBall() {
         myRigidbody.isKinematic = false;
     }
 
     void OnCollisionEnter(Collision other) {
+        if (other.gameObject.GetComponent<BottomPlatform>()) {
+            gameManager.OnBottomPlatformHit();
+            return;
+        }
+        if (destroyPlatformRequired) {
+            helix.DestroyActualPlatform();
+            myRigidbody.velocity = new Vector3(0f, 5f, 0f);
+            destroyPlatformRequired = false;
+            return;
+        }
+        if (other.gameObject.GetComponent<TiltPart>()) {
+            StopBall();
+            helix.StopRotationControl();
+            gameManager.OnTiltPartHit();
+            return;
+        }
         if (other.gameObject.GetComponent<PlatformOfBouncing>() && gameObject.transform.position.y > other.transform.position.y) {
             myRigidbody.velocity = new Vector3(0f, ballVelocity, 0f);
             audioSource.Play();
             gameManager.OnBouncingPartHit();
-        } else if (other.gameObject.GetComponent<TiltPart>()) {
-            StopBall();
-            helix.StopRotationControl();
-            gameManager.OnTiltPartHit();
-        } else if (other.gameObject.GetComponent<BottomPlatform>()) {
-            gameManager.OnBottomPlatformHit();
         }
     }
 
-    public void StopBall() {
+    private void StopBall() {
         myRigidbody.isKinematic = true;
         myRigidbody.velocity = Vector3.zero;
         gameStopRequired = true;
+    }
+
+    private void DestroyPlatformOrderReceived() {
+        destroyPlatformRequired = true;
     }
 
 }

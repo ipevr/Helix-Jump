@@ -9,9 +9,7 @@ public class PlatformExitObserver : MonoBehaviour {
 
     void OnTriggerEnter(Collider other) {
         if (other.gameObject.GetComponent<Ball>()) {
-            if (onBallEnteredPlatformExitObserver != null) { // other classes must have subscribed to the event
-                onBallEnteredPlatformExitObserver();
-            }
+            onBallEnteredPlatformExitObserver?.Invoke();
             // Disable collider of passed platform to prevent ball exit the collider a second time
             gameObject.GetComponent<Collider>().enabled = false;
         }

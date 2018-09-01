@@ -51,5 +51,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aa5363afef5ab840bb2a605ecfb9803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  switchToNextLevelWaitTime: 2
-  actualPlatform: {fileID: 0}
+  platformPassesForDestroy: 2
