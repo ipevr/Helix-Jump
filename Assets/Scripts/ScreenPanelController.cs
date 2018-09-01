@@ -32,9 +32,9 @@ public class ScreenPanelController : MonoBehaviour {
         playAgainPanel.SetActive(false);
         gameWonPanel.SetActive(false);
         nextLevelPanel.SetActive(false);
-        textBubbleActualLevel = levelManager.ActulSceneIndex.ToString();
-        if (levelManager.ActulSceneIndex < levelManager.NumberOfLevelsInGame) {
-            textBubbleNextLevel = (levelManager.ActulSceneIndex + 1).ToString();
+        textBubbleActualLevel = (levelManager.ActulSceneIndex + 1).ToString();
+        if (levelManager.ActulSceneIndex < levelManager.NumberOfLevelsInGame - 1) {
+            textBubbleNextLevel = (levelManager.ActulSceneIndex + 2).ToString();
         } else {
             textBubbleNextLevel = "E";
         }

@@ -48,7 +48,7 @@ public class CameraController : MonoBehaviour {
     void StopCamera() {
         if (moveObjectRequired) {
             // Move to the correct camera view of the actual platform
-            Vector3 endPosition = gameManager.actualPlatform.transform.position + startingPosition;
+            Vector3 endPosition = gameManager.ActualPlatform.transform.position + startingPosition;
             StartCoroutine(MoveOverSeconds(gameObject, endPosition, movingTime));
         }
         moveObjectRequired = false;

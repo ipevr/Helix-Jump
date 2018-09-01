@@ -17,7 +17,6 @@ public class OptionsScreenPanelController : MonoBehaviour {
     }
 
     public void ShowAreYouSurePanel() {
-        Debug.Log("Klick");
         areYouSurePanel.SetActive(true);
     }
 
@@ -26,7 +25,6 @@ public class OptionsScreenPanelController : MonoBehaviour {
     }
 
     public void BackToGame() {
-        Debug.Log("Klick");
         levelManager.BackToGame();
     }
 

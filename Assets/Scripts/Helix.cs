@@ -14,7 +14,6 @@ public class Helix : MonoBehaviour {
     CameraController cameraController;
     GameManager gameManager;
     HelixBuild helixBuild;
-    float moveValue = -4f;
     float angle = 0f;
     int platformNumber = 0;
     bool rotationStopped = true;
@@ -37,6 +36,9 @@ public class Helix : MonoBehaviour {
             platformExitObservers[i].onBallEnteredPlatformExitObserver += OnBallEnteredPlatformExitObserver;
         }
         gameManager.SetActualPlatform(platformExitObservers[0].transform.parent.gameObject);
+
+        gameManager.gameContinueOrder += StartRotationControl;
+        gameManager.gameStopOrder += StopRotationControl;
     }
 	
 	// Update is called once per frame
@@ -80,6 +82,7 @@ public class Helix : MonoBehaviour {
         float progressInPercent = 100f / platformExitObservers.Length;
         platformNumber++;
         gameManager.OnLevelProgress(progressInPercent);
+        gameManager.PlatformPassedCounter();
         if (platformNumber < platformExitObservers.Length) {
             gameManager.SetActualPlatform(platformExitObservers[platformNumber].transform.parent.gameObject);
         } else {

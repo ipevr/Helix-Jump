@@ -14,7 +14,7 @@ public class PlayerPrefsManager : MonoBehaviour {
 
     public static int GetActualLevel() {
         if (!PlayerPrefs.HasKey(ACTUAL_LEVEL_KEY)) {
-            SetActualLevel(1);
+            SetActualLevel(0);
         }
         return PlayerPrefs.GetInt(ACTUAL_LEVEL_KEY);
     }

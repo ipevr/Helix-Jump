@@ -5,28 +5,40 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
-    public GameObject actualPlatform = null;
-
+    GameObject actualPlatform = null;
     ScreenPanelController screenPanelController;
     LevelManager levelManager;
-    Ball ball;
-    Helix helix;
-    int actualLevelIndex = 0;
+    int platformPassedCounter = 0;
+
+    public GameObject ActualPlatform => actualPlatform;
+
+    public delegate void GameContinueOrder();
+    public event GameContinueOrder gameContinueOrder;
+    public delegate void GameStopOrder();
+    public event GameStopOrder gameStopOrder;
+
 
     // Use this for initialization
     void Start () {
         screenPanelController = FindObjectOfType<ScreenPanelController>();
         levelManager = FindObjectOfType<LevelManager>();
-        ball = FindObjectOfType<Ball>();
-        helix = FindObjectOfType<Helix>();
     }
 
     public void OnLevelProgress(float progressInPercent) {
         screenPanelController.ShowLevelProgress(progressInPercent);
     }
 
+    public void PlatformPassedCounter() {
+        platformPassedCounter++;
+        Debug.Log("Passed " + platformPassedCounter);
+    }
+
     public void OnTiltPartHit() {
         AskPlayerAnotherTry();
+    }
+
+    public void OnBouncingPartHit() {
+        platformPassedCounter = 0;
     }
 
     public void OnBottomPlatformHit() {
@@ -61,13 +73,15 @@ public class GameManager : MonoBehaviour {
     }
 
     public void ContinueGame() {
-        ball.StartBall();
-        helix.StartRotationControl();
+        if (gameContinueOrder != null) {
+            gameContinueOrder();
+        }
     }
 
     public void StopGame() {
-        ball.StopBall();
-        helix.StopRotationControl();
+        if (gameStopOrder != null) {
+            gameStopOrder();
+        }
     }
 
     void AskPlayerAnotherTry() {

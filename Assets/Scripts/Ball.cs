@@ -25,6 +25,9 @@ public class Ball : MonoBehaviour {
         gameManager = FindObjectOfType<GameManager>();
         helixBuild = FindObjectOfType<HelixBuild>();
         helix = FindObjectOfType<Helix>();
+
+        gameManager.gameContinueOrder += StartBall;
+        gameManager.gameStopOrder += StopBall;
     }
 
     private void Update() {
@@ -41,6 +44,7 @@ public class Ball : MonoBehaviour {
         if (other.gameObject.GetComponent<PlatformOfBouncing>() && gameObject.transform.position.y > other.transform.position.y) {
             myRigidbody.velocity = new Vector3(0f, ballVelocity, 0f);
             audioSource.Play();
+            gameManager.OnBouncingPartHit();
         } else if (other.gameObject.GetComponent<TiltPart>()) {
             StopBall();
             helix.StopRotationControl();
@@ -53,7 +57,6 @@ public class Ball : MonoBehaviour {
     public void StopBall() {
         myRigidbody.isKinematic = true;
         myRigidbody.velocity = Vector3.zero;
-        Debug.Log("stop");
         gameStopRequired = true;
     }
 
