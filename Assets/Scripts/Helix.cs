@@ -19,6 +19,8 @@ public class Helix : MonoBehaviour {
     bool rotationStopped = true;
     bool helixBuildFinished = false;
 
+    bool rotationPaused = false;
+
     private void Awake() {
         // Helix has to be built on Awake because other classes are expecting components of the Helix on Start
         helixBuild = GetComponent<HelixBuild>();
@@ -43,6 +45,10 @@ public class Helix : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (Input.GetButtonDown("Jump")) {
+            rotationPaused = !rotationPaused;
+            Debug.Log("paused" + rotationPaused);
+        }
         // rotate Helix with mouse movement
         if (helixBuild.HelixBuildFinished && !helixBuildFinished) {
             rotationStopped = false;
@@ -54,7 +60,9 @@ public class Helix : MonoBehaviour {
                 angle += myTouch.deltaPosition.x * rotationDamping;
 #if UNITY_EDITOR
             } else {
-                angle = Input.mousePosition.x;
+                if (!rotationPaused) {
+                    angle = Input.mousePosition.x;
+                }
 #endif
             }
             transform.rotation = Quaternion.AngleAxis(-angle, Vector3.up);
