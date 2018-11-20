@@ -38,14 +38,7 @@ public class CameraController : MonoBehaviour {
         }
     }
 
-    public void MoveCamera() {
-        actualPosition = gameObject.transform.position;
-        float ballPositionY = ball.gameObject.transform.position.y;
-        deltaY = actualPosition.y - ballPositionY;
-        moveObjectRequired = true;
-    }
-
-    void StopCamera() {
+    private void StopCamera() {
         if (moveObjectRequired) {
             // Move to the correct camera view of the actual platform
             Vector3 endPosition = gameManager.ActualPlatform.transform.position + startingPosition;
@@ -54,7 +47,7 @@ public class CameraController : MonoBehaviour {
         moveObjectRequired = false;
     }
 
-    public IEnumerator MoveOverSeconds(GameObject objectToMove, Vector3 endPosition, float movingTime) {
+    private IEnumerator MoveOverSeconds(GameObject objectToMove, Vector3 endPosition, float movingTime) {
         float elaspedTime = 0f;
         Vector3 startingPosition = objectToMove.transform.position;
         while (elaspedTime < movingTime) {
@@ -63,6 +56,12 @@ public class CameraController : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
         objectToMove.transform.position = endPosition;
+    }
+    public void MoveCamera() {
+        actualPosition = gameObject.transform.position;
+        float ballPositionY = ball.gameObject.transform.position.y;
+        deltaY = actualPosition.y - ballPositionY;
+        moveObjectRequired = true;
     }
 
 }

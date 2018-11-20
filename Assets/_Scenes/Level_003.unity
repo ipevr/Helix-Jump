@@ -1849,7 +1849,7 @@ Prefab:
     - target: {fileID: 114990480055675160, guid: 7b4b5935e3f136549bd19639f18a2476,
         type: 2}
       propertyPath: numberOfPlatforms
-      value: 3
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7b4b5935e3f136549bd19639f18a2476, type: 2}

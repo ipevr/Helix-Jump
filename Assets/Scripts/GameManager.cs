@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
+    [SerializeField]
+    int platformPassesForDestroy = 2;
+
     GameObject actualPlatform = null;
     ScreenPanelController screenPanelController;
     LevelManager levelManager;
@@ -16,6 +19,8 @@ public class GameManager : MonoBehaviour {
     public event GameContinueOrder gameContinueOrder;
     public delegate void GameStopOrder();
     public event GameStopOrder gameStopOrder;
+    public delegate void DestroyPlatformOrder();
+    public event DestroyPlatformOrder destroyPlatformOrder;
 
 
     // Use this for initialization
@@ -30,7 +35,10 @@ public class GameManager : MonoBehaviour {
 
     public void PlatformPassedCounter() {
         platformPassedCounter++;
-        Debug.Log("Passed " + platformPassedCounter);
+        if (platformPassedCounter >= platformPassesForDestroy) {
+            destroyPlatformOrder?.Invoke();
+            platformPassedCounter = 0;
+        }
     }
 
     public void OnTiltPartHit() {
@@ -44,6 +52,7 @@ public class GameManager : MonoBehaviour {
     public void OnBottomPlatformHit() {
         if (!levelManager.IsLastSceneIndex) {
             StopGame();
+            screenPanelController.ShowNextLevelPanel(levelManager.ActulSceneIndex + 2);
             levelManager.NextLevel();
         } else {
             GameWon();
@@ -73,15 +82,11 @@ public class GameManager : MonoBehaviour {
     }
 
     public void ContinueGame() {
-        if (gameContinueOrder != null) {
-            gameContinueOrder();
-        }
+        gameContinueOrder?.Invoke();
     }
 
     public void StopGame() {
-        if (gameStopOrder != null) {
-            gameStopOrder();
-        }
+        gameStopOrder?.Invoke();
     }
 
     void AskPlayerAnotherTry() {

@@ -17,7 +17,11 @@ public class Helix : MonoBehaviour {
     float angle = 0f;
     int platformNumber = 0;
     bool rotationStopped = true;
-    bool helixBuildFinished = false;
+
+    public bool HelixBuildFinished => helixBuild.HelixBuildFinished;
+
+
+
 
     bool rotationPaused = false;
 
@@ -50,9 +54,8 @@ public class Helix : MonoBehaviour {
             Debug.Log("paused" + rotationPaused);
         }
         // rotate Helix with mouse movement
-        if (helixBuild.HelixBuildFinished && !helixBuildFinished) {
+        if (helixBuild.HelixBuildFinished) {
             rotationStopped = false;
-            helixBuildFinished = true;
         }
         if (!rotationStopped) {
             if (Input.touchCount == 1) {
@@ -102,12 +105,44 @@ public class Helix : MonoBehaviour {
         cameraController.MoveCamera();
     }
 
+    public void DestroyActualPlatform() {
+        MoveCamera();
+        LetExplode(platformExitObservers[platformNumber].transform.parent.gameObject);
+        //Destroy(platformExitObservers[platformNumber].transform.parent.gameObject);
+        platformNumber++;
+        if (platformNumber < platformExitObservers.Length) {
+            gameManager.SetActualPlatform(platformExitObservers[platformNumber].transform.parent.gameObject);
+        }
+    }
+
     public void StopRotationControl() {
         rotationStopped = true;
     }
 
     public void StartRotationControl() {
         rotationStopped = false;
+    }
+    private void LetExplode(GameObject platform) {
+        for (int i = 0; i < platform.transform.childCount; i++) {
+            GameObject platformPart = platform.transform.GetChild(i).gameObject;
+            Rigidbody myRigidbody = platformPart.GetComponent<Rigidbody>();
+            if (myRigidbody) {
+                myRigidbody.isKinematic = false;
+                myRigidbody.useGravity = true;
+                platformPart.GetComponent<Collider>().enabled = false;
+                float forceInX = Random.Range(-10f, 10f);
+                float forceInZ = Random.Range(-10f, 10f);
+                float angVeloInX = Random.Range(-20f, 20f);
+                float angVeloInY = Random.Range(-20f, 20f);
+                float angVeloInZ = Random.Range(-20f, 20f);
+                myRigidbody.velocity = new Vector3(forceInX, 5f, forceInZ);
+                myRigidbody.angularVelocity = new Vector3(angVeloInX, angVeloInY, angVeloInZ);
+            } else {
+                Destroy(platformPart);
+            }
+        }
+
+
     }
 
 }

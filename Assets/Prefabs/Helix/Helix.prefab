@@ -91,5 +91,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0973af0ad439b46829928f7187ed4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfPlatforms: 1
+  numberOfPlatforms: 10
   rotationDamping: 0.8

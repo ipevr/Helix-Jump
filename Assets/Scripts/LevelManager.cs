@@ -13,7 +13,6 @@ public class LevelManager : MonoBehaviour {
 
     int actualLevelIndex = 0;
     int lastGameLevelIndex = 0;
-    ScreenPanelController screenPanelController; // TODO: eliminate circular reference levelManager <-> screenPanelController!
 
     public int NumberOfLevelsInGame => SceneManager.sceneCountInBuildSettings - 1;
     public bool IsLastSceneIndex => (SceneManager.GetActiveScene().buildIndex == NumberOfLevelsInGame - 1);
@@ -21,7 +20,6 @@ public class LevelManager : MonoBehaviour {
     int OptionsScreenIndex => SceneManager.sceneCountInBuildSettings - 1;
 
     private void Start() {
-        screenPanelController = FindObjectOfType<ScreenPanelController>();
         if (!PlayerPrefsManager.ActualLevelKeyExists) {
             PlayerPrefsManager.SetActualLevel(lastGameLevelIndex);
         }
@@ -29,11 +27,9 @@ public class LevelManager : MonoBehaviour {
         if ((ActulSceneIndex != actualLevelIndex) && (ActulSceneIndex != OptionsScreenIndex)) {
             SceneManager.LoadScene(actualLevelIndex);
         }
-
     }
 
     public void NextLevel() {
-        screenPanelController.ShowNextLevelPanel(ActulSceneIndex + 2);
         StartCoroutine(LoadLevelAfterTime(ActulSceneIndex + 1, switchToNextLevelWaitTime));
         PlayerPrefsManager.SetActualLevel(ActulSceneIndex + 1);
     }
